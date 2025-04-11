@@ -1,0 +1,481 @@
+5. Estructuras de datos 
+Este capítulo describe con más detalle algunas cosas que ya has aprendido y también agrega algunas cosas nuevas.
+
+5.1. Más sobre las listas 
+El tipo de dato de lista tiene más métodos. A continuación, se muestran todos los métodos de los objetos de lista:
+
+lista.adjuntar ( x )​
+Añade un elemento al final de la lista. Similar a .a[len(a):] = [x]
+
+lista.extender ( iterable )​
+Extiende la lista añadiendo todos los elementos del iterable. Similar a .a[len(a):] = iterable
+
+lista.insertar ( i , x )​
+Inserta un elemento en una posición dada. El primer argumento es el índice del elemento anterior al cual se insertará, por lo que se inserta al principio de la lista y es equivalente a .a.insert(0, x)a.insert(len(a), x)a.append(x)
+
+lista. eliminar ( x )
+Elimina el primer elemento de la lista cuyo valor sea igual a x . Se lanza una función ValueErrorsi no existe dicho elemento.
+
+lista.pop ( [ i ] )​
+Elimina el elemento en la posición indicada en la lista y lo devuelve. Si no se especifica ningún índice, a.pop()elimina y devuelve el último elemento de la lista. Lanza una función IndexErrorsi la lista está vacía o el índice está fuera de su rango.
+
+lista.clear ( )​
+Eliminar todos los elementos de la lista. Similar a .del a[:]
+
+lista.índice ( x [ , inicio [ , fin ] ] )​
+Devuelve el índice basado en cero de la lista del primer elemento cuyo valor es igual a x . Genera `a` ValueErrorsi no existe dicho elemento.
+
+Los argumentos opcionales "start" y "end" se interpretan como en la notación de segmentos y se utilizan para limitar la búsqueda a una subsecuencia específica de la lista. El índice devuelto se calcula con respecto al inicio de la secuencia completa, en lugar del argumento "start" .
+
+lista. contar ( x )
+Devuelve el número de veces que x aparece en la lista.
+
+lista.sort ( * , clave = Ninguna , reverso = Falso )​
+Ordena los elementos de la lista en su lugar (los argumentos se pueden usar para personalizar la clasificación; consulte sorted()su explicación).
+
+lista.reverse ( )​
+Invierte los elementos de la lista en su lugar.
+
+lista.copiar ( )​
+Devuelve una copia superficial de la lista. Similar a a[:].
+
+Un ejemplo que utiliza la mayoría de los métodos de lista:
+
+>>>
+fruits = ['orange', 'apple', 'pear', 'banana', 'kiwi', 'apple', 'banana']
+fruits.count('apple')
+2
+fruits.count('tangerine')
+0
+fruits.index('banana')
+3
+fruits.index('banana', 4)  # Find next banana starting at position 4
+6
+fruits.reverse()
+fruits
+['banana', 'apple', 'kiwi', 'banana', 'pear', 'apple', 'orange']
+fruits.append('grape')
+fruits
+['banana', 'apple', 'kiwi', 'banana', 'pear', 'apple', 'orange', 'grape']
+fruits.sort()
+fruits
+['apple', 'apple', 'banana', 'banana', 'grape', 'kiwi', 'orange', 'pear']
+fruits.pop()
+'pear'
+Es posible que hayas notado que métodos como insert, removeo sortque solo modifican la lista no tienen ningún valor de retorno impreso: devuelven el valor predeterminado None. [ 1 ] Este es un principio de diseño para todas las estructuras de datos mutables en Python.
+
+Otra cosa que podrías notar es que no todos los datos se pueden ordenar ni comparar. Por ejemplo, no se ordena porque los enteros no se pueden comparar con cadenas ni con otros tipos. Además, hay algunos tipos que no tienen una relación de ordenación definida. Por ejemplo, no es una comparación válida.[None, 'hello', 10]None3+4j < 5+7j
+
+5.1.1. Uso de listas como 
+Los métodos de lista facilitan el uso de una lista como pila, donde el último elemento añadido es el primero en recuperarse (último en entrar, primero en salir). Para añadir un elemento al principio de la pila, utilice append(). Para recuperar un elemento del principio de la pila, utilice pop()sin un índice explícito. Por ejemplo:
+
+>>>
+stack = [3, 4, 5]
+stack.append(6)
+stack.append(7)
+stack
+[3, 4, 5, 6, 7]
+stack.pop()
+7
+stack
+[3, 4, 5, 6]
+stack.pop()
+6
+stack.pop()
+5
+stack
+[3, 4]
+5.1.2. Uso de listas como 
+También es posible usar una lista como cola, donde el primer elemento añadido es el primero en recuperarse ("primero en entrar, primero en salir"); sin embargo, las listas no son eficientes para este propósito. Mientras que añadir y extraer datos del final de la lista es rápido, insertar o extraer datos del principio es lento (ya que todos los demás elementos deben desplazarse en uno).
+
+Para implementar una cola, utilice collections.dequela cual fue diseñada para tener agregaciones y extracciones rápidas desde ambos extremos. Por ejemplo:
+
+>>>
+from collections import deque
+queue = deque(["Eric", "John", "Michael"])
+queue.append("Terry")           # Terry arrives
+queue.append("Graham")          # Graham arrives
+queue.popleft()                 # The first to arrive now leaves
+'Eric'
+queue.popleft()                 # The second to arrive now leaves
+'John'
+queue                           # Remaining queue in order of arrival
+deque(['Michael', 'Terry', 'Graham'])
+5.1.3. Comprensión de listas 
+Las comprensiones de listas ofrecen una forma concisa de crear listas. Sus aplicaciones más comunes son crear nuevas listas donde cada elemento es el resultado de operaciones aplicadas a cada miembro de otra secuencia o iterable, o crear una subsecuencia de aquellos elementos que satisfacen una condición determinada.
+
+Por ejemplo, supongamos que queremos crear una lista de cuadrados, como:
+
+>>>
+squares = []
+for x in range(10):
+    squares.append(x**2)
+
+squares
+[0, 1, 4, 9, 16, 25, 36, 49, 64, 81]
+Tenga en cuenta que esto crea (o sobrescribe) una variable llamada xque aún existe después de completar el bucle. Podemos calcular la lista de cuadrados sin efectos secundarios usando:
+
+squares = list(map(lambda x: x**2, range(10)))
+o, equivalentemente:
+
+squares = [x**2 for x in range(10)]
+que es más conciso y legible.
+
+Una comprensión de lista consiste en paréntesis que contienen una expresión seguida de una forcláusula, seguida de cero o más cláusulas for"or if ". El resultado será una nueva lista resultante de evaluar la expresión en el contexto de las cláusulas for"and if" que la siguen. Por ejemplo, esta lista combina los elementos de dos listas si no son iguales:
+
+>>>
+[(x, y) for x in [1,2,3] for y in [3,1,4] if x != y]
+[(1, 3), (1, 4), (2, 3), (2, 1), (2, 4), (3, 1), (3, 4)]
+y es equivalente a:
+
+>>>
+combs = []
+for x in [1,2,3]:
+    for y in [3,1,4]:
+        if x != y:
+            combs.append((x, y))
+
+combs
+[(1, 3), (1, 4), (2, 3), (2, 1), (2, 4), (3, 1), (3, 4)]
+Observe cómo el orden de las declaraciones fory ifes el mismo en ambos fragmentos.
+
+Si la expresión es una tupla (por ejemplo, la del ejemplo anterior), debe estar entre paréntesis.(x, y)
+
+>>>
+vec = [-4, -2, 0, 2, 4]
+# create a new list with the values doubled
+[x*2 for x in vec]
+[-8, -4, 0, 4, 8]
+# filter the list to exclude negative numbers
+[x for x in vec if x >= 0]
+[0, 2, 4]
+# apply a function to all the elements
+[abs(x) for x in vec]
+[4, 2, 0, 2, 4]
+# call a method on each element
+freshfruit = ['  banana', '  loganberry ', 'passion fruit  ']
+[weapon.strip() for weapon in freshfruit]
+['banana', 'loganberry', 'passion fruit']
+# create a list of 2-tuples like (number, square)
+[(x, x**2) for x in range(6)]
+[(0, 0), (1, 1), (2, 4), (3, 9), (4, 16), (5, 25)]
+# the tuple must be parenthesized, otherwise an error is raised
+[x, x**2 for x in range(6)]
+  File "<stdin>", line 1
+    [x, x**2 for x in range(6)]
+     ^^^^^^^
+SyntaxError: did you forget parentheses around the comprehension target?
+# flatten a list using a listcomp with two 'for'
+vec = [[1,2,3], [4,5,6], [7,8,9]]
+[num for elem in vec for num in elem]
+[1, 2, 3, 4, 5, 6, 7, 8, 9]
+Las listas por comprensión pueden contener expresiones complejas y funciones anidadas:
+
+>>>
+from math import pi
+[str(round(pi, i)) for i in range(1, 6)]
+['3.1', '3.14', '3.142', '3.1416', '3.14159']
+5.1.4. Comprensiones de listas anidadas 
+La expresión inicial en una comprensión de lista puede ser cualquier expresión arbitraria, incluida otra comprensión de lista.
+
+Considere el siguiente ejemplo de una matriz 3x4 implementada como una lista de 3 listas de longitud 4:
+
+>>>
+matrix = [
+    [1, 2, 3, 4],
+    [5, 6, 7, 8],
+    [9, 10, 11, 12],
+]
+La siguiente lista por comprensión transpondrá filas y columnas:
+
+>>>
+[[row[i] for row in matrix] for i in range(4)]
+[[1, 5, 9], [2, 6, 10], [3, 7, 11], [4, 8, 12]]
+Como vimos en la sección anterior, la comprensión de lista interna se evalúa en el contexto de la forque le sigue, por lo que este ejemplo es equivalente a:
+
+>>>
+transposed = []
+for i in range(4):
+    transposed.append([row[i] for row in matrix])
+
+transposed
+[[1, 5, 9], [2, 6, 10], [3, 7, 11], [4, 8, 12]]
+que a su vez es lo mismo que:
+
+>>>
+transposed = []
+for i in range(4):
+    # the following 3 lines implement the nested listcomp
+    transposed_row = []
+    for row in matrix:
+        transposed_row.append(row[i])
+    transposed.append(transposed_row)
+
+transposed
+[[1, 5, 9], [2, 6, 10], [3, 7, 11], [4, 8, 12]]
+En la práctica, es preferible usar funciones integradas a instrucciones de flujo complejas. Esta zip()función sería ideal para este caso práctico:
+
+>>>
+list(zip(*matrix))
+[(1, 5, 9), (2, 6, 10), (3, 7, 11), (4, 8, 12)]
+Consulte Desempaquetar listas de argumentos para obtener detalles sobre el asterisco en esta línea.
+
+5.2. La deldeclaración 
+Existe una forma de eliminar un elemento de una lista según su índice en lugar de su valor: la delsentencia. Esto difiere del pop()método que devuelve un valor. La delsentencia también puede usarse para eliminar porciones de una lista o borrarla por completo (lo que hicimos anteriormente asignando una lista vacía a la porción). Por ejemplo:
+
+>>>
+a = [-1, 1, 66.25, 333, 333, 1234.5]
+del a[0]
+a
+[1, 66.25, 333, 333, 1234.5]
+del a[2:4]
+a
+[1, 66.25, 1234.5]
+del a[:]
+a
+[]
+delTambién se puede utilizar para eliminar variables enteras:
+
+>>>
+del a
+Hacer referencia al nombre ade aquí en adelante es un error (al menos hasta que se le asigne otro valor). Encontraremos otros usos delmás adelante.
+
+5.3. Tuplas y secuencias 
+Vimos que las listas y las cadenas comparten muchas propiedades, como las operaciones de indexación y segmentación. Son dos ejemplos de tipos de datos de secuencia (véase Tipos de secuencia: lista, tupla, rango ). Dado que Python es un lenguaje en constante evolución, se pueden añadir otros tipos de datos de secuencia. También existe otro tipo de datos de secuencia estándar: la tupla .
+
+Una tupla consta de una serie de valores separados por comas, por ejemplo:
+
+>>>
+t = 12345, 54321, 'hello!'
+t[0]
+12345
+t
+(12345, 54321, 'hello!')
+# Tuples may be nested:
+u = t, (1, 2, 3, 4, 5)
+u
+((12345, 54321, 'hello!'), (1, 2, 3, 4, 5))
+# Tuples are immutable:
+t[0] = 88888
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: 'tuple' object does not support item assignment
+# but they can contain mutable objects:
+v = ([1, 2, 3], [3, 2, 1])
+v
+([1, 2, 3], [3, 2, 1])
+Como puede ver, en la salida, las tuplas siempre se encierran entre paréntesis para que las tuplas anidadas se interpreten correctamente. Pueden introducirse con o sin paréntesis, aunque a menudo son necesarios (si la tupla forma parte de una expresión mayor). No es posible asignar valores a los elementos individuales de una tupla; sin embargo, es posible crear tuplas que contengan objetos mutables, como listas.
+
+Aunque las tuplas pueden parecer similares a las listas, suelen usarse en diferentes situaciones y con distintos propósitos. Las tuplas son inmutables y suelen contener una secuencia heterogénea de elementos a los que se accede mediante desempaquetado (véase más adelante en esta sección) o indexación (o incluso mediante atributo en el caso de namedtuples). Las listas son mutables y sus elementos suelen ser homogéneos y se accede a ellos iterando sobre la lista.
+
+Un problema especial es la construcción de tuplas que contienen 0 o 1 elemento: la sintaxis presenta algunas peculiaridades adicionales para adaptarse a estas. Las tuplas vacías se construyen con un par de paréntesis vacíos; una tupla con un solo elemento se construye añadiendo una coma después de cada valor (no basta con encerrar un solo valor entre paréntesis). Es un poco desagradable, pero efectivo. Por ejemplo:
+
+>>>
+empty = ()
+singleton = 'hello',    # <-- note trailing comma
+len(empty)
+0
+len(singleton)
+1
+singleton
+('hello',)
+La declaración es un ejemplo de empaquetamiento de tuplas : los valores , y se empaquetan juntos en una tupla. La operación inversa también es posible:t = 12345, 54321, 'hello!'1234554321'hello!'
+
+>>>
+x, y, z = t
+Esto se denomina, apropiadamente, desempaquetado de secuencias y funciona para cualquier secuencia en el lado derecho. El desempaquetado de secuencias requiere que haya tantas variables en el lado izquierdo del signo igual como elementos en la secuencia. Tenga en cuenta que la asignación múltiple es simplemente una combinación de empaquetado de tuplas y desempaquetado de secuencias.
+
+5.4. Conjuntos 
+Python también incluye un tipo de dato para conjuntos . Un conjunto es una colección desordenada sin elementos duplicados. Sus usos básicos incluyen la comprobación de pertenencia y la eliminación de entradas duplicadas. Los objetos de conjunto también admiten operaciones matemáticas como unión, intersección, diferencia y diferencia simétrica.
+
+Se pueden usar llaves o la set()función para crear conjuntos. Nota: para crear un conjunto vacío, se debe usar set(), no {}; este último crea un diccionario vacío, una estructura de datos que se describe en la siguiente sección.
+
+A continuación se muestra una breve demostración:
+
+>>>
+basket = {'apple', 'orange', 'apple', 'pear', 'orange', 'banana'}
+print(basket)                      # show that duplicates have been removed
+{'orange', 'banana', 'pear', 'apple'}
+'orange' in basket                 # fast membership testing
+True
+'crabgrass' in basket
+False
+
+# Demonstrate set operations on unique letters from two words
+
+a = set('abracadabra')
+b = set('alacazam')
+a                                  # unique letters in a
+{'a', 'r', 'b', 'c', 'd'}
+a - b                              # letters in a but not in b
+{'r', 'd', 'b'}
+a | b                              # letters in a or b or both
+{'a', 'c', 'r', 'd', 'b', 'm', 'z', 'l'}
+a & b                              # letters in both a and b
+{'a', 'c'}
+a ^ b                              # letters in a or b but not both
+{'r', 'd', 'b', 'm', 'z', 'l'}
+De manera similar a las comprensiones de listas , también se admiten las comprensiones de conjuntos:
+
+>>>
+a = {x for x in 'abracadabra' if x not in 'abc'}
+a
+{'r', 'd'}
+5.5. Diccionarios 
+Otro tipo de dato útil integrado en Python es el diccionario (véase Tipos de mapeo — dict ). En otros lenguajes, los diccionarios a veces se denominan «memorias asociativas» o «arreglos asociativos». A diferencia de las secuencias, que se indexan mediante un rango de números, los diccionarios se indexan mediante claves , que pueden ser de cualquier tipo inmutable; las cadenas y los números siempre pueden ser claves. Las tuplas se pueden usar como claves si contienen solo cadenas, números o tuplas; si una tupla contiene algún objeto mutable, ya sea directa o indirectamente, no se puede usar como clave. No se pueden usar listas como claves, ya que estas se pueden modificar in situ mediante asignaciones de índices, asignaciones de segmentos o métodos como append()y extend().
+
+Es mejor pensar en un diccionario como un conjunto de pares clave-valor , con el requisito de que las claves sean únicas (dentro de un diccionario). Un par de llaves crea un diccionario vacío: {}. Al colocar una lista de pares clave-valor separados por comas entre las llaves, se añaden los pares clave-valor iniciales al diccionario; así es como se escriben los diccionarios en la salida.
+
+Las operaciones principales en un diccionario son almacenar un valor con una clave y extraerlo con la clave dada. También es posible eliminar un par clave:valor con del. Si se almacena con una clave ya en uso, se olvida el valor anterior asociado a esa clave. Extraer un valor con una clave inexistente es un error.
+
+Al ejecutar list(d)un diccionario, se obtiene una lista de todas las claves utilizadas en él, en orden de inserción (si desea ordenarlas, utilice [ sorted(d)en su lugar]). Para comprobar si una sola clave está en el diccionario, utilice la inpalabra clave.
+
+He aquí un pequeño ejemplo utilizando un diccionario:
+
+>>>
+tel = {'jack': 4098, 'sape': 4139}
+tel['guido'] = 4127
+tel
+{'jack': 4098, 'sape': 4139, 'guido': 4127}
+tel['jack']
+4098
+del tel['sape']
+tel['irv'] = 4127
+tel
+{'jack': 4098, 'guido': 4127, 'irv': 4127}
+list(tel)
+['jack', 'guido', 'irv']
+sorted(tel)
+['guido', 'irv', 'jack']
+'guido' in tel
+True
+'jack' not in tel
+False
+El dict()constructor crea diccionarios directamente a partir de secuencias de pares clave-valor:
+
+>>>
+dict([('sape', 4139), ('guido', 4127), ('jack', 4098)])
+{'sape': 4139, 'guido': 4127, 'jack': 4098}
+Además, las comprensiones de diccionarios se pueden utilizar para crear diccionarios a partir de expresiones de clave y valor arbitrarias:
+
+>>>
+{x: x**2 for x in (2, 4, 6)}
+{2: 4, 4: 16, 6: 36}
+Cuando las claves son cadenas simples, a veces es más fácil especificar pares usando argumentos de palabras clave:
+
+>>>
+dict(sape=4139, guido=4127, jack=4098)
+{'sape': 4139, 'guido': 4127, 'jack': 4098}
+5.6. Técnicas de bucle 
+Al recorrer diccionarios, la clave y el valor correspondiente se pueden recuperar al mismo tiempo utilizando el items()método.
+
+>>>
+knights = {'gallahad': 'the pure', 'robin': 'the brave'}
+for k, v in knights.items():
+    print(k, v)
+
+gallahad the pure
+robin the brave
+Al recorrer una secuencia, el índice de posición y el valor correspondiente se pueden recuperar al mismo tiempo utilizando la enumerate()función.
+
+>>>
+for i, v in enumerate(['tic', 'tac', 'toe']):
+    print(i, v)
+
+0 tic
+1 tac
+2 toe
+Para recorrer dos o más secuencias al mismo tiempo, las entradas se pueden emparejar con la zip()función.
+
+>>>
+questions = ['name', 'quest', 'favorite color']
+answers = ['lancelot', 'the holy grail', 'blue']
+for q, a in zip(questions, answers):
+    print('What is your {0}?  It is {1}.'.format(q, a))
+
+What is your name?  It is lancelot.
+What is your quest?  It is the holy grail.
+What is your favorite color?  It is blue.
+Para recorrer una secuencia en sentido inverso, primero especifique la secuencia en dirección hacia adelante y luego llame a la reversed()función.
+
+>>>
+for i in reversed(range(1, 10, 2)):
+    print(i)
+
+9
+7
+5
+3
+1
+Para recorrer una secuencia en orden ordenado, utilice la sorted()función que devuelve una nueva lista ordenada dejando la fuente inalterada.
+
+>>>
+basket = ['apple', 'orange', 'apple', 'pear', 'orange', 'banana']
+for i in sorted(basket):
+    print(i)
+
+apple
+apple
+banana
+orange
+orange
+pear
+Usar set()"on" en una secuencia elimina elementos duplicados. Usar " sorted()in" junto con " set()over" en una secuencia es una forma idiomática de recorrer en bucle los elementos únicos de la secuencia en orden.
+
+>>>
+basket = ['apple', 'orange', 'apple', 'pear', 'orange', 'banana']
+for f in sorted(set(basket)):
+    print(f)
+
+apple
+banana
+orange
+pear
+A veces resulta tentador cambiar una lista mientras se está recorriendo; sin embargo, suele ser más simple y seguro crear una lista nueva.
+
+>>>
+import math
+raw_data = [56.2, float('NaN'), 51.7, 55.3, 52.5, float('NaN'), 47.8]
+filtered_data = []
+for value in raw_data:
+    if not math.isnan(value):
+        filtered_data.append(value)
+
+filtered_data
+[56.2, 51.7, 55.3, 52.5, 47.8]
+5.7. Más sobre las condiciones 
+Las condiciones utilizadas en whilelas ifdeclaraciones y pueden contener cualquier operador, no solo comparaciones.
+
+Los operadores de comparación iny son pruebas de pertenencia que determinan si un valor está (o no) en un contenedor. Los operadores y comparan si dos objetos son realmente el mismo. Todos los operadores de comparación tienen la misma prioridad, que es menor que la de todos los operadores numéricos.not inisis not
+
+Las comparaciones se pueden encadenar. Por ejemplo, se comprueba si es menor que y, además, si es igual a .a < b == cabbc
+
+Las comparaciones pueden combinarse mediante los operadores booleanos andy or, y el resultado de una comparación (o de cualquier otra expresión booleana) puede negarse con not. Estos tienen menor prioridad que los operadores de comparación; entre ellos, nottiene la prioridad más alta y orla más baja, por lo que equivale a . Como siempre, se pueden usar paréntesis para expresar la composición deseada.A and not B or C(A and (not B)) or C
+
+Los operadores booleanos andy orson los llamados operadores de cortocircuito : sus argumentos se evalúan de izquierda a derecha y la evaluación se detiene en cuanto se determina el resultado. Por ejemplo, si Ay Cson verdaderos pero Bes falso, no se evalúa la expresión . Cuando se usa como valor general y no como booleano, el valor de retorno de un operador de cortocircuito es el último argumento evaluado.A and B and CC
+
+Es posible asignar el resultado de una comparación u otra expresión booleana a una variable. Por ejemplo,
+
+>>>
+string1, string2, string3 = '', 'Trondheim', 'Hammer Dance'
+non_null = string1 or string2 or string3
+non_null
+'Trondheim'
+Tenga en cuenta que en Python, a diferencia de C, la asignación dentro de expresiones debe realizarse explícitamente con el operador "walrus" := . Esto evita un problema común en los programas en C: escribir = una expresión cuando ==no se desea.
+
+5.8. Comparación de secuencias y otros 
+Los objetos de secuencia suelen compararse con otros objetos del mismo tipo. La comparación utiliza el orden lexicográfico : primero se comparan los dos primeros elementos; si difieren, esto determina el resultado de la comparación; si son iguales, se comparan los dos elementos siguientes, y así sucesivamente, hasta agotar cualquiera de las secuencias. Si dos elementos a comparar son secuencias del mismo tipo, la comparación lexicográfica se realiza recursivamente. Si todos los elementos de dos secuencias son iguales, se consideran iguales. Si una secuencia es una subsecuencia inicial de la otra, la secuencia más corta es la más pequeña (menor). El orden lexicográfico de cadenas utiliza el número de punto de código Unicode para ordenar caracteres individuales. Algunos ejemplos de comparaciones entre secuencias del mismo tipo:
+
+(1, 2, 3)              < (1, 2, 4)
+[1, 2, 3]              < [1, 2, 4]
+'ABC' < 'C' < 'Pascal' < 'Python'
+(1, 2, 3, 4)           < (1, 2, 4)
+(1, 2)                 < (1, 2, -1)
+(1, 2, 3)             == (1.0, 2.0, 3.0)
+(1, 2, ('aa', 'ab'))   < (1, 2, ('abc', 'a'), 4)
+Tenga en cuenta que comparar objetos de diferentes tipos con <o >es válido siempre que los objetos cuenten con métodos de comparación adecuados. Por ejemplo, los tipos numéricos mixtos se comparan según su valor numérico, por lo que 0 es igual a 0.0, etc. De lo contrario, en lugar de proporcionar un orden arbitrario, el intérprete generará una TypeErrorexcepción.
+
+Notas al pie
+
+[ 1 ]
+Otros lenguajes pueden devolver el objeto mutado, lo que permite el encadenamiento de métodos, como d->insert("a")->remove("b")->sort();.
